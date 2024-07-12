@@ -2372,22 +2372,27 @@ public class AntForestV2 extends ModelTask {
      * propGroup, propType, holdsNum, propIdList[], propConfigVO[propName]
      */
     private JSONObject findPropBag(String propType) {
-        // 获取背包信息
         JSONObject prop = null;
-        JSONObject jo = new JSONObject(AntForestRpcCall.queryPropList(false));
-        if (!"SUCCESS".equals(jo.getString("resultCode"))) {
-            Log.record(jo.getString("resultDesc"));
-            Log.i(jo.toString());
-            return prop;
-        }
-        // 遍历背包查找道具
-        JSONArray forestPropVOList = jo.getJSONArray("forestPropVOList");
-        for (int i = 0; i < forestPropVOList.length(); i++) {
-            JSONObject forestPropVO = forestPropVOList.getJSONObject(i);
-            if (forestPropVO.getString("propType").equals(propType)) {
-                prop = forestPropVO;
-                break;
+        try {
+            // 获取背包信息
+            JSONObject jo = new JSONObject(AntForestRpcCall.queryPropList(false));
+            if (!"SUCCESS".equals(jo.getString("resultCode"))) {
+                Log.record(jo.getString("resultDesc"));
+                Log.i(jo.toString());
+                return prop;
             }
+            // 遍历背包查找道具
+            JSONArray forestPropVOList = jo.getJSONArray("forestPropVOList");
+            for (int i = 0; i < forestPropVOList.length(); i++) {
+                JSONObject forestPropVO = forestPropVOList.getJSONObject(i);
+                if (forestPropVO.getString("propType").equals(propType)) {
+                    prop = forestPropVO;
+                    break;
+                }
+            }
+        } catch (Throwable th) {
+            Log.i(TAG, "findPropBag err:");
+            Log.printStackTrace(TAG, th);
         }
         return prop;
     }
@@ -2402,18 +2407,24 @@ public class AntForestV2 extends ModelTask {
             Log.record("要使用的道具不存在！");
             return false;
         }
-        // 使用道具
-        JSONObject jo = new JSONObject(
-            AntForestRpcCall.consumeProp(
-                prop.getJSONArray("propIdList").getString(0), prop.getString("propType")));
-        if ("SUCCESS".equals(jo.getString("resultCode"))) {
-            Log.forest("使用道具🎭[" + prop.getJSONObject("propConfigVO").getString("propName") + "]");
-        } else {
-            Log.record(jo.getString("resultDesc"));
-            Log.i(jo.toString());
-            return false;
+        try {
+            // 使用道具
+            JSONObject jo = new JSONObject(
+                AntForestRpcCall.consumeProp(
+                    prop.getJSONArray("propIdList").getString(0), prop.getString("propType")));
+            if ("SUCCESS".equals(jo.getString("resultCode"))) {
+                Log.forest("使用道具🎭[" + prop.getJSONObject("propConfigVO").getString("propName") + "]");
+                return true;
+            } else {
+                Log.record(jo.getString("resultDesc"));
+                Log.i(jo.toString());
+                return false;
+            }
+        } catch (Throwable th) {
+            Log.i(TAG, "usePropBag err:");
+            Log.printStackTrace(TAG, th);
         }
-        return true;
+        return false;
     }
 
     /*
@@ -2422,32 +2433,37 @@ public class AntForestV2 extends ModelTask {
      * spuId, skuId, skuName, exchangedCount, price[amount]
      */
     private JSONObject findPropShop(String spuId, String skuId) {
-        // 获取商店信息
         JSONObject sku = null;
-        JSONObject jo = new JSONObject(AntForestRpcCall.itemList("SC_ASSETS"));
-        if (!jo.getBoolean("success")) {
-            Log.record(jo.getString("desc"));
-            Log.i(jo.toString());
-            return sku;
-        }
-        // 遍历商店查找道具
-        JSONArray itemInfoVOList = jo.optJSONArray("itemInfoVOList");
-        if (itemInfoVOList != null && itemInfoVOList.length() > 0) {
-            return sku;
-        }
-        for (int i = 0; i < itemInfoVOList.length(); i++) {
-            jo = itemInfoVOList.getJSONObject(i);
-            if (jo.getString("spuId").equals(spuId)) {
-                JSONArray skuModelList = jo.getJSONArray("skuModelList");
-                for (int j = 0; j < skuModelList.length(); j++) {
-                    jo = skuModelList.getJSONObject(j);
-                    if (jo.getString("skuId").equals(skuId)) {
-                        sku = jo;
-                        break;
-                    }
-                }
-                break;
+        try {
+            // 获取商店信息
+            JSONObject jo = new JSONObject(AntForestRpcCall.itemList("SC_ASSETS"));
+            if (!jo.getBoolean("success")) {
+                Log.record(jo.getString("desc"));
+                Log.i(jo.toString());
+                return sku;
             }
+            // 遍历商店查找道具
+            JSONArray itemInfoVOList = jo.optJSONArray("itemInfoVOList");
+            if (itemInfoVOList != null && itemInfoVOList.length() > 0) {
+                return sku;
+            }
+            for (int i = 0; i < itemInfoVOList.length(); i++) {
+                jo = itemInfoVOList.getJSONObject(i);
+                if (jo.getString("spuId").equals(spuId)) {
+                    JSONArray skuModelList = jo.getJSONArray("skuModelList");
+                    for (int j = 0; j < skuModelList.length(); j++) {
+                        jo = skuModelList.getJSONObject(j);
+                        if (jo.getString("skuId").equals(skuId)) {
+                            sku = jo;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        } catch (Throwable th) {
+            Log.i(TAG, "findPropShop err:");
+            Log.printStackTrace(TAG, th);
         }
         return sku;
     }
@@ -2462,31 +2478,37 @@ public class AntForestV2 extends ModelTask {
             Log.record("要兑换的道具不存在！");
             return false;
         }
-        // 已经达到兑换上限，返回
-        if (sku.getInt("exchangedCount") >= exchangeCountlimit) {
-            return false;
+        try {
+            // 已经达到兑换上限，返回
+            if (sku.getInt("exchangedCount") >= exchangeCountlimit) {
+                return false;
+            }
+            // 获取活力值信息
+            JSONObject jo = new JSONObject(AntForestRpcCall.queryVitalityStoreIndex());
+            if (!"SUCCESS".equals(jo.getString("resultCode"))) {
+                return false;
+            }
+            // 活力值小于兑换花费，返回
+            if (jo.getJSONObject("userVitalityInfoVO").getInt("totalVitalityAmount")
+                    < sku.getJSONObject("price").getDouble("amount")) {
+                Log.record("活力值不足，停止兑换[" + sku.getString("skuName") + "]！");
+                return false;
+            }
+            // 活力值兑换道具
+            jo = new JSONObject(AntForestRpcCall.exchangeBenefit(sku.getString("spuId"), sku.getString("skuId")));
+            if ("SUCCESS".equals(jo.getString("resultCode"))) {
+                Log.forest("活力兑换🎐[" + sku.getString("skuName") + "]");
+                return true;
+            } else {
+                Log.record(jo.getString("resultDesc"));
+                Log.i(jo.toString());
+                return false;
+            }
+        } catch (Throwable th) {
+            Log.i(TAG, "exchangePropShop err:");
+            Log.printStackTrace(TAG, th);
         }
-        // 获取活力值
-        JSONObject jo = new JSONObject(AntForestRpcCall.queryVitalityStoreIndex());
-        if (!"SUCCESS".equals(jo.getString("resultCode"))) {
-            return false;
-        }
-        // 活力值小于兑换花费，返回
-        if (jo.getJSONObject("userVitalityInfoVO").getInt("totalVitalityAmount")
-                < sku.getJSONObject("price").getDouble("amount")) {
-            Log.record("活力值不足，停止兑换[" + sku.getString("skuName") + "]！");
-            return false;
-        }
-        // 活力值兑换道具
-        jo = new JSONObject(AntForestRpcCall.exchangeBenefit(sku.getString("spuId"), sku.getString("skuId")));
-        if ("SUCCESS".equals(jo.getString("resultCode"))) {
-            Log.forest("活力兑换🎐[" + sku.getString("skuName") + "]");
-            return true;
-        } else {
-            Log.record(jo.getString("resultDesc"));
-            Log.i(jo.toString());
-            return false;
-        }
+        return false;
     }
 
     /**
