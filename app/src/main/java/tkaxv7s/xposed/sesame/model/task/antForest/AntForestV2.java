@@ -2427,7 +2427,7 @@ public class AntForestV2 extends ModelTask {
         JSONObject jo = new JSONObject(AntForestRpcCall.itemList("SC_ASSETS"));
         if (!jo.getBoolean("success")) {
             Log.record(jo.getString("desc"));
-            Log.i(s);
+            Log.i(jo.toString());
             return sku;
         }
         // 遍历商店查找道具
