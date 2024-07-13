@@ -100,6 +100,9 @@ public class AntForestV2 extends ModelTask {
     private BooleanModelField stealthCardConstant;
     private BooleanModelField useStealthCard;
     private BooleanModelField exchangeStealthCard;
+    private BooleanModelField useEnergyShield;
+    private BooleanModelField exchangeEnergyShield;
+    private IntegerModelField exchangeEnergyShieldCount;
     private BooleanModelField helpFriendCollect;
     private ChoiceModelField helpFriendCollectType;
     private SelectModelField helpFriendCollectList;
@@ -176,7 +179,10 @@ public class AntForestV2 extends ModelTask {
         modelFields.addField(exchangeEnergyDoubleClickCountLongTime = new IntegerModelField("exchangeEnergyDoubleClickCountLongTime", "活力值 | 兑换永久双击卡数量", 6));
         modelFields.addField(exchangeCollectHistoryAnimal7Days = new BooleanModelField("exchangeCollectHistoryAnimal7Days", "活力值 | 兑换物种历史卡", false));
         modelFields.addField(exchangeStealthCard = new BooleanModelField("exchangeStealthCard", "活力值 | 兑换限时隐身卡", false));
-        modelFields.addField(useStealthCard = new BooleanModelField("useStealthCard", "使用限时隐身卡", false));
+        modelFields.addField(exchangeEnergyShield = new BooleanModelField("exchangeEnergyShield", "活力值 | 兑换限时保护罩", false));
+        modelFields.addField(exchangeEnergyShieldCount = new IntegerModelField("exchangeEnergyShieldCount", "活力值 | 兑换限时保护罩数量", 1));
+        modelFields.addField(useStealthCard = new BooleanModelField("useStealthCard", "使用隐身卡", false));
+        modelFields.addField(useEnergyShield = new BooleanModelField("useEnergyShield", "使用能量保护罩", false));
         modelFields.addField(whackMole = new BooleanModelField("whackMole", "6秒拼手速", true));
         modelFields.addField(collectProp = new BooleanModelField("collectProp", "收集道具", false));
         modelFields.addField(collectWateringBubble = new BooleanModelField("collectWateringBubble", "收金球", false));
@@ -251,9 +257,27 @@ public class AntForestV2 extends ModelTask {
             if (exchangeStealthCard.getValue()) {
                 exchangePropShop(findPropShop("SP20230521000082", "SK20230521000206"), 1);
             }
-            // 使用 限时隐身卡
+            // 使用 隐身卡
             if (useStealthCard.getValue()) {
-                usePropBag(findPropBag("LIMIT_TIME_STEALTH_CARD"));
+                // 使用 限时隐身卡
+                if (!usePropBag(findPropBag("LIMIT_TIME_STEALTH_CARD"))) {
+                    // 使用 永久隐身卡
+                    usePropBag(findPropBag("STEALTH_CARD"));
+                }
+            }
+
+            // 兑换 限时保护罩
+            if (exchangeEnergyShield.getValue()) {
+                exchangePropShop(findPropShop("CR20230517000497", "CR20230516000370"), exchangeEnergyShieldCount.getValue());
+            }
+
+            // 使用 能量保护罩
+            if (useEnergyShield.getValue()) {
+                // 使用 限时能量保护罩
+                if (!usePropBag(findPropBag("LIMIT_TIME_ENERGY_SHIELD"))) {
+                    // 使用 永久能量保护罩
+                    usePropBag(findPropBag("ENERGY_SHIELD"));
+                }
             }
 
             collectSelfEnergy();
@@ -2512,7 +2536,7 @@ public class AntForestV2 extends ModelTask {
             // 活力值兑换道具
             jo = new JSONObject(AntForestRpcCall.exchangeBenefit(sku.getString("spuId"), sku.getString("skuId")));
             if ("SUCCESS".equals(jo.getString("resultCode"))) {
-                Log.forest("活力兑换🎐[" + sku.getString("skuName") + "]");
+                Log.forest("活力兑换🎐[" + sku.getString("skuName") + "]#第" + (sku.getInt("exchangedCount") + 1) + "次");
                 return true;
             } else {
                 Log.record(jo.getString("resultDesc"));
