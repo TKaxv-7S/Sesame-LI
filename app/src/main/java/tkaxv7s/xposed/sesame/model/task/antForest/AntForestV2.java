@@ -1414,15 +1414,10 @@ public class AntForestV2 extends ModelTask {
 
     // 兑换 神奇物种抽历史卡机会
     private void exchangeCollectHistoryAnimal7Days() {
-        try {
-            // 商店查找 神奇物种抽历史卡机会
-            JSONObject jo = findPropShop("SP20230518000022", "SK20230518000062");
-            // 商店兑换 神奇物种抽历史卡机会
-            exchangePropShop(jo, 1);
-        } catch (Throwable t) {
-            Log.i(TAG, "exchangeCollectHistoryAnimal7Days err:");
-            Log.printStackTrace(TAG, t);
-        }
+        // 商店查找 神奇物种抽历史卡机会
+        JSONObject jo = findPropShop("SP20230518000022", "SK20230518000062");
+        // 商店兑换 神奇物种抽历史卡机会
+        exchangePropShop(jo, 1);
     }
 
     private void receiveTaskAward() {
@@ -2423,8 +2418,8 @@ public class AntForestV2 extends ModelTask {
         } catch (Throwable th) {
             Log.i(TAG, "usePropBag err:");
             Log.printStackTrace(TAG, th);
+            return false;
         }
-        return false;
     }
 
     /*
@@ -2507,8 +2502,8 @@ public class AntForestV2 extends ModelTask {
         } catch (Throwable th) {
             Log.i(TAG, "exchangePropShop err:");
             Log.printStackTrace(TAG, th);
+            return false;
         }
-        return false;
     }
 
     /**
