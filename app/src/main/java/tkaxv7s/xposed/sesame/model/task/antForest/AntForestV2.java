@@ -96,6 +96,9 @@ public class AntForestV2 extends ModelTask {
     @Getter
     private IntegerModelField doubleCountLimit;
     private BooleanModelField doubleCardConstant;
+    private BooleanModelField stealthCardConstant;
+    private BooleanModelField useStealthCard;
+    private BooleanModelField exchangeStealthCard;
     private BooleanModelField helpFriendCollect;
     private ChoiceModelField helpFriendCollectType;
     private SelectModelField helpFriendCollectList;
@@ -153,6 +156,8 @@ public class AntForestV2 extends ModelTask {
         modelFields.addField(doubleCountLimit = new IntegerModelField("doubleCountLimit", "双击卡 | 使用次数", 6));
         modelFields.addField(doubleCardTime = new ListModelField.ListJoinCommaToStringModelField("doubleCardTime", "双击卡 | 使用时间(范围)", ListUtil.newArrayList("0700-0730")));
         modelFields.addField(doubleCardConstant = new BooleanModelField("DoubleCardConstant", "双击卡 | 限时双击永动机", false));
+        modelFields.addField(useStealthCard = new BooleanModelField("useStealthCard", "使用限时隐身卡", false));
+        modelFields.addField(exchangeStealthCard = new BooleanModelField("exchangeStealthCard", "兑换限时隐身卡", false));
         modelFields.addField(returnWater10 = new IntegerModelField("returnWater10", "返水 | 10克需收能量(关闭:0)", 0));
         modelFields.addField(returnWater18 = new IntegerModelField("returnWater18", "返水 | 18克需收能量(关闭:0)", 0));
         modelFields.addField(returnWater33 = new IntegerModelField("returnWater33", "返水 | 33克需收能量(关闭:0)", 0));
@@ -234,6 +239,15 @@ public class AntForestV2 extends ModelTask {
 
             if (!balanceNetworkDelay.getValue()) {
                 offsetTime.set(0);
+            }
+
+            // 兑换 限时隐身卡
+            if (exchangeStealthCard.getValue()) {
+                exchangePropShop(findPropShop("SP20230521000082", "SK20230521000206"), 1);
+            }
+            // 使用 限时隐身卡
+            if (useStealthCard.getValue()) {
+                usePropBag(findPropBag("LIMIT_TIME_STEALTH_CARD"));
             }
 
             collectSelfEnergy();
