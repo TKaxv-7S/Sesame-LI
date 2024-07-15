@@ -8,9 +8,9 @@ import tkaxv7s.xposed.sesame.data.modelFieldExt.BooleanModelField;
 import tkaxv7s.xposed.sesame.data.modelFieldExt.ChoiceModelField;
 import tkaxv7s.xposed.sesame.data.modelFieldExt.SelectModelField;
 import tkaxv7s.xposed.sesame.data.task.ModelTask;
-import tkaxv7s.xposed.sesame.model.task.antFarm.AntFarm.TaskStatus;
 import tkaxv7s.xposed.sesame.entity.AlipayUser;
 import tkaxv7s.xposed.sesame.model.base.TaskCommon;
+import tkaxv7s.xposed.sesame.model.task.antFarm.AntFarm.TaskStatus;
 import tkaxv7s.xposed.sesame.util.*;
 
 import java.util.*;
@@ -317,7 +317,7 @@ public class AntDodo extends ModelTask {
                 for (int i = 0; i < limitList.length(); i++) {
                     JSONObject limit = limitList.getJSONObject(i);
                     if (limit.getString("actionCode").equals("COLLECT_TO_FRIEND")) {
-                        if (limit.getLong("startTime") < System.currentTimeMillis()) {
+                        if (limit.getLong("startTime") > System.currentTimeMillis()) {
                             return;
                         }
                         count = limit.getInt("leftLimit");
