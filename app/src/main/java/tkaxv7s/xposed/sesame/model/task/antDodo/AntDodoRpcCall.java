@@ -39,6 +39,10 @@ public class AntDodoRpcCall {
                         + taskType + "\",\"uniqueId\":\"" + uniqueId + "\"}]");
     }
 
+    private static String getUniqueId() {
+        return String.valueOf(System.currentTimeMillis()) + RandomUtil.nextLong();
+    }
+
     public static String receiveTaskAward(String sceneCode, String taskType) {
         return ApplicationHook.requestString("com.alipay.antiep.receiveTaskAward",
                 "[{\"ignoreLimit\":0,\"requestType\":\"rpc\",\"sceneCode\":\"" + sceneCode

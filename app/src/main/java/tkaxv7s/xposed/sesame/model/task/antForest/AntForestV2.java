@@ -121,7 +121,6 @@ public class AntForestV2 extends ModelTask {
     private BooleanModelField medicalHealthFeeds;
     private BooleanModelField sendEnergyByAction;
     private BooleanModelField animalConsumeProp;
-    private SelectModelField sendFriendCard;
     private SelectModelField whoYouWantToGiveTo;
     private BooleanModelField ecoLifeTick;
     private BooleanModelField ecoLifeOpen;
@@ -190,7 +189,6 @@ public class AntForestV2 extends ModelTask {
         modelFields.addField(medicalHealthFeeds = new BooleanModelField("medicalHealthFeeds", "健康医疗", false));
         modelFields.addField(sendEnergyByAction = new BooleanModelField("sendEnergyByAction", "森林集市", false));
         modelFields.addField(giveEnergyRainList = new SelectModelField("giveEnergyRainList", "赠送能量雨列表", new LinkedHashSet<>(), AlipayUser::getList));
-        modelFields.addField(sendFriendCard = new SelectModelField("sendFriendCard", "送卡片好友列表(当前图鉴所有卡片)", new LinkedHashSet<>(), AlipayUser::getList));
         modelFields.addField(whoYouWantToGiveTo = new SelectModelField("whoYouWantToGiveTo", "赠送道具好友列表（所有可送道具）", new LinkedHashSet<>(), AlipayUser::getList));
         modelFields.addField(ecoLifeTick = new BooleanModelField("ecoLifeTick", "绿色 | 行动打卡", false));
         modelFields.addField(ecoLifeOpen = new BooleanModelField("ecoLifeOpen", "绿色 | 自动开通", false));

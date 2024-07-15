@@ -35,6 +35,7 @@ public class ModelOrder {
             , AntMember.class
             , GreenFinance.class
             , AnswerAI.class
+            , AntDodo.class
     };
 
     private static final List<Class<Model>> readOnlyClazzList = Collections.unmodifiableList(Arrays.asList(array));
