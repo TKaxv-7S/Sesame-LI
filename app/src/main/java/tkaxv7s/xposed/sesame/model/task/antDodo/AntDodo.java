@@ -11,7 +11,9 @@ import tkaxv7s.xposed.sesame.data.task.ModelTask;
 import tkaxv7s.xposed.sesame.entity.AlipayUser;
 import tkaxv7s.xposed.sesame.model.base.TaskCommon;
 import tkaxv7s.xposed.sesame.model.task.antFarm.AntFarm.TaskStatus;
-import tkaxv7s.xposed.sesame.util.*;
+import tkaxv7s.xposed.sesame.util.Log;
+import tkaxv7s.xposed.sesame.util.TimeUtil;
+import tkaxv7s.xposed.sesame.util.UserIdMap;
 
 import java.util.*;
 
@@ -36,9 +38,9 @@ public class AntDodo extends ModelTask {
     @Override
     public ModelFields getFields() {
         ModelFields modelFields = new ModelFields();
-        modelFields.addField(collectToFriend = new BooleanModelField("collectToFriend", "帮好友开卡", false));
-        modelFields.addField(collectToFriendType = new ChoiceModelField("collectToFriendType", "帮好友开卡 | 动作", CollectToFriendType.COLLECT, CollectToFriendType.nickNames));
-        modelFields.addField(collectToFriendList = new SelectModelField("collectToFriendList", "帮好友开卡 | 好友列表", new LinkedHashSet<>(), AlipayUser::getList));
+        modelFields.addField(collectToFriend = new BooleanModelField("collectToFriend", "帮好友抽卡 | 开启", false));
+        modelFields.addField(collectToFriendType = new ChoiceModelField("collectToFriendType", "帮好友抽卡 | 动作", CollectToFriendType.COLLECT, CollectToFriendType.nickNames));
+        modelFields.addField(collectToFriendList = new SelectModelField("collectToFriendList", "帮好友抽卡 | 好友列表", new LinkedHashSet<>(), AlipayUser::getList));
         modelFields.addField(sendFriendCard = new SelectModelField("sendFriendCard", "送卡片好友列表(当前图鉴所有卡片)", new LinkedHashSet<>(), AlipayUser::getList));
         return modelFields;
     }
@@ -342,7 +344,7 @@ public class AntDodo extends ModelTask {
                         String ecosystem = jo.getJSONObject("data").getJSONObject("animal").getString("ecosystem");
                         String name = jo.getJSONObject("data").getJSONObject("animal").getString("name");
                         String userName = UserIdMap.getMaskName(useId);
-                        Log.forest("神奇物种🦕[" + ecosystem + "]#" + name + "#帮助好友[" + userName + "]");
+                        Log.forest("神奇物种🦕帮好友[" + userName + "]抽卡[" + ecosystem + "]#" + name);
                         count--;
                     } else {
                         Log.i(TAG, jo.getString("resultDesc"));
