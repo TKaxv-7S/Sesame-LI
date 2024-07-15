@@ -1,6 +1,7 @@
-package tkaxv7s.xposed.sesame.model.task.antForest;
+package tkaxv7s.xposed.sesame.model.task.antDodo;
 
 import tkaxv7s.xposed.sesame.hook.ApplicationHook;
+import tkaxv7s.xposed.sesame.util.RandomUtil;
 
 public class AntDodoRpcCall {
 

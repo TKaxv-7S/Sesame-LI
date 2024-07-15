@@ -1,6 +1,7 @@
 package tkaxv7s.xposed.sesame.model.task.antDodo;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import tkaxv7s.xposed.sesame.data.ModelFields;
 import tkaxv7s.xposed.sesame.data.ModelGroup;
@@ -329,7 +330,7 @@ public class AntDodo extends ModelTask {
                     JSONObject friend = friendList.getJSONObject(i);
                     if (friend.getBoolean("dailyCollect")) continue;
                     String useId = friend.getString("userId");
-                    boolean isCollectToFriend = collectToFriend.getValue().contains(useId);
+                    boolean isCollectToFriend = collectToFriendList.getValue().contains(useId);
                     if (collectToFriendType.getValue() == CollectToFriendType.DONT_COLLECT) {
                         isCollectToFriend = !isCollectToFriend;
                     }
