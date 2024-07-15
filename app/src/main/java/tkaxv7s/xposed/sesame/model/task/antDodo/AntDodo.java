@@ -313,7 +313,7 @@ public class AntDodo extends ModelTask {
             JSONObject jo = new JSONObject(AntDodoRpcCall.queryFriend());
             if ("SUCCESS".equals(jo.getString("resultCode"))) {
                 int count = 0;
-                JSONObject limitList = jo.getJSONObject("data").getJSONObject("extend").getJSONArray("limit");
+                JSONArray limitList = jo.getJSONObject("data").getJSONObject("extend").getJSONArray("limit");
                 for (int i = 0; i < limitList.length(); i++) {
                     JSONObject limit = limitList.getJSONObject(i);
                     if (limit.getString("actionCode").equals("COLLECT_TO_FRIEND")) {
@@ -325,7 +325,7 @@ public class AntDodo extends ModelTask {
                     }
 
                 }
-                JSONObject friendList = jo.getJSONObject("data").getJSONArray("friends");
+                JSONArray friendList = jo.getJSONObject("data").getJSONArray("friends");
                 for (int i = 0; i < friendList.length() && count > 0; i++) {
                     JSONObject friend = friendList.getJSONObject(i);
                     if (friend.getBoolean("dailyCollect")) continue;
