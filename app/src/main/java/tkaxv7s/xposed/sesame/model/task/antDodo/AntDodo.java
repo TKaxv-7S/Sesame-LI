@@ -34,7 +34,7 @@ public class AntDodo extends ModelTask {
     private ChoiceModelField collectToFriendType;
     private SelectModelField collectToFriendList;
     private SelectModelField sendFriendCard;
-    private Boolean useProp;
+    private BooleanModelField useProp;
 
     @Override
     public ModelFields getFields() {
