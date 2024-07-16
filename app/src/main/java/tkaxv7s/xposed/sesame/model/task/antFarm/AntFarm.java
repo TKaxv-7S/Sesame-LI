@@ -1128,7 +1128,7 @@ public class AntFarm extends ModelTask {
 
     private Boolean useAccelerateToolBeforeCheck() {
         try {
-            String s = AntFarmRpcCall.syncAnimalStatus();
+            String s = AntFarmRpcCall.syncAnimalStatus(ownerFarmId);
             JSONObject jo = new JSONObject(s);
             String memo = jo.getString("memo");
             if ("SUCCESS".equals(jo.getString("memo"))) {
@@ -1141,7 +1141,7 @@ public class AntFarm extends ModelTask {
                 if (feedTimes > 60 * 60 * 4) {
                     return false;
                 }
-                if (!Status.canUseAccelerateTool) {
+                if (!Status.canUseAccelerateTool()) {
                     return false;
                 }
                 if (useFarmTool(ownerFarmId, ToolType.ACCELERATETOOL)) {
