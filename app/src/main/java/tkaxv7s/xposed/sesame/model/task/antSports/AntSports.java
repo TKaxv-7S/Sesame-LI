@@ -333,7 +333,6 @@ public class AntSports extends ModelTask {
         } catch (Throwable t) {
             Log.i(TAG, "receiveEvent err:");
             Log.printStackTrace(TAG, t);
-            return null;
         }
     }
 
