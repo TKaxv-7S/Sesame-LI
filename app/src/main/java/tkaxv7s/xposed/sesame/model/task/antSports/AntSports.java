@@ -129,7 +129,7 @@ public class AntSports extends ModelTask {
             if (walkGo.getValue()) {
                 walkGo(pathId);
             }
-            if (openTreasureBox.getValue() && !walk.getValue())
+            if (openTreasureBox.getValue() && !walkGo.getValue())
                 queryMyHomePage(loader);
 
             if (donateCharityCoin.getValue() && Status.canDonateCharityCoin())
@@ -263,7 +263,7 @@ public class AntSports extends ModelTask {
             }
             JSONObject path = queryPath(joinedPathId);
             JSONObject userPathStep = path.getJSONObject("userPathStep");
-            if (equals("COMPLETED").equals(userPathStep.getString("pathCompleteStatus"))) {
+            if ("COMPLETED".equals(userPathStep.getString("pathCompleteStatus"))) {
                 Log.record("完成路线🚶🏻‍♂️[" + userPathStep.getString("pathName") + "]");
                 joinPath(pathId);
                 return;
@@ -287,7 +287,7 @@ public class AntSports extends ModelTask {
         try {
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            JSONObject jo = new JSONObject(AntSportsRpcCall.WalkGo("202312191135", sdf.format(date), pathId, useStepCount));
+            JSONObject jo = new JSONObject(AntSportsRpcCall.walkGo("202312191135", sdf.format(date), pathId, useStepCount));
             if (jo.getBoolean("success")) {
                 Log.record("行走路线🚶🏻‍♂️[" + pathName + "]#前进了" + useStepCount + "步");
                 queryPath(pathId);
@@ -299,25 +299,24 @@ public class AntSports extends ModelTask {
     }
 
     private JSONObject queryPath(String pathId) {
+        JSONObject path = null;
         try {
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             JSONObject jo = new JSONObject(AntSportsRpcCall.queryPath("202312191135", sdf.format(date), pathId));
             if (jo.getBoolean("success")) {
+                path = jo.getJSONObject("data");
                 JSONArray ja = jo.getJSONObject("data").getJSONArray("treasureBoxList");
                 for (int i = 0; i < ja.length(); i++) {
                     JSONObject treasureBox = ja.getJSONObject(i);
                     receiveEvent(treasureBox.getString("boxNo"));
                 }
-                return jo.getJSONObject("data");
-            } else {
-                return null;
             }
         } catch (Throwable t) {
             Log.i(TAG, "queryPath err:");
             Log.printStackTrace(TAG, t);
-            return null;
         }
+        return path;
     }
 
     private void receiveEvent(String eventBillNo) {
