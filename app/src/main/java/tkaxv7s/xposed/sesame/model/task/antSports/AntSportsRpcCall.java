@@ -177,23 +177,24 @@ public class AntSportsRpcCall {
     public static String queryThemeList() {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.theme.queryThemeList",
                             "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\"clientOS\":\"android\","
-                                            + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"NEW_HOME_PAGE_STATIC\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]}]");
+                                            + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]"
+                                            + "}]");
     }
 
     // 查询世界地图
     public static String queryWorldMap(String themeId) {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.queryWorldMap",
-                            "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\"themeId\":\"" + themeId
-                                            + "\",\"clientOS\":\"android\","
-                                            + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"NEW_HOME_PAGE_STATIC\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]}]");
+                            "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\"clientOS\":\"android\","
+                                            + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]"
+                                            + ",\"themeId\":\"" + themeId + "\"}]");
     }
 
-    // 查询城市路径
+    // 查询城市路线
     public static String queryCityPath(String cityId) {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.queryCityPath",
-                            "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\"cityId\":\"" + cityId
-                                            + "\",\"clientOS\":\"android\","
-                                            + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"NEW_HOME_PAGE_STATIC\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]}]");
+                            "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\"clientOS\":\"android\","
+                                            + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]"
+                                            + ",\"cityId\":\"" + cityId + "\"}]");
     }
 
     // 查询路线
@@ -205,7 +206,7 @@ public class AntSportsRpcCall {
                                             + "\",\"wufuRewardType\":\"" + wufuRewardType + "\"}]");
     }
 
-    // 加入路径
+    // 加入路线
     public static String joinPath(String pathId) {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.joinPath",
                             "[{\"pathId\":\"" + pathId + "\",\"source\":\"ch_appcenter__chsub_9patch\"}]");
@@ -226,7 +227,7 @@ public class AntSportsRpcCall {
                             "[{\"eventBillNo\":\"" + eventBillNo + "\"}]");
     }
 
-    // 查询路径奖励
+    // 查询路线奖励
     public static String queryPathReward(String appId, String pathId) {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.queryPathReward", "[{\"appId\":\""
                             + appId + "\",\"pathId\":\"" + pathId + "\",\"source\":\"ch_appcenter__chsub_9patch\"}]");
