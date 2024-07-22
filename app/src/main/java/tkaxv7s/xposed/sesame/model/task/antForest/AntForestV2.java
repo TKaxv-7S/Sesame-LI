@@ -2039,11 +2039,11 @@ public class AntForestV2 extends ModelTask {
     private void queryAnimalPropList() {
         try {
             JSONObject jo = new JSONObject(AntForestRpcCall.queryAnimalPropList());
-            if (!"SUCCESS".equals(jo.getJSONObject("resData").getString("resultCode"))) {
-                Log.i(TAG, jo.getJSONObject("resData").getString("resultDesc"));
+            if (!"SUCCESS".equals(jo.getString("resultCode"))) {
+                Log.i(TAG, jo.getString("resultDesc"));
                 return;
             }
-            JSONArray animalProps = jo.getJSONObject("resData").getJSONArray("animalProps");
+            JSONArray animalProps = jo.getJSONArray("animalProps");
             JSONObject animalProp = null;
             for (int i = 0; i < animalProps.length(); i++) {
                 jo = animalProps.getJSONObject(i);
@@ -2070,10 +2070,10 @@ public class AntForestV2 extends ModelTask {
             String propType = animalProp.getJSONObject("main").getString("propType");
             String name = animalProp.getJSONObject("partner").getString("name");
             JSONObject jo = new JSONObject(AntForestRpcCall.consumeProp(propGroup, propType, false));
-            if ("SUCCESS".equals(jo.getJSONObject("resData").getString("resultCode"))) {
+            if ("SUCCESS".equals(jo.getString("resultCode"))) {
                 Log.forest("巡护派遣🐆[" + name + "]");
             } else {
-                Log.i(TAG, jo.getJSONObject("resData").getString("resultDesc"));
+                Log.i(TAG, jo.getString("resultDesc"));
             }
         } catch (Throwable t) {
             Log.i(TAG, "consumeAnimalProp err:");
