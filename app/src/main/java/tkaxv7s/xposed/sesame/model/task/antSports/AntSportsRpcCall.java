@@ -202,7 +202,7 @@ public class AntSportsRpcCall {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.queryPath",
                             "[{\"appId\":\"" + appId + "\",\"date\":\"" + date + "\",\"pathId\":\"" + pathId
                                             + "\",\"source\":\"ch_appcenter__chsub_9patch\",\"timeZone\":\"" + timeZone
-                                            + "\"wufuRewardType\":\"" + wufuRewardType + "\"}]");
+                                            + "\",\"wufuRewardType\":\"" + wufuRewardType + "\"}]");
     }
 
     // 加入路径
