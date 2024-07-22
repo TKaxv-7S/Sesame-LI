@@ -170,14 +170,13 @@ public class AntSportsRpcCall {
     // 查询用户
     public static String queryUser() {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.queryUser",
-                            "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\",\"clientOS\":\"android\","
-                                            + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"NEW_HOME_PAGE_STATIC\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]}]");
+                            "[{\"source\":\"ch_appcenter__chsub_9patch\",\"timeZone\":\"" + timeZone + "\"}]");
     }
 
     // 查询主题列表
     public static String queryThemeList() {
             return ApplicationHook.requestString("com.alipay.sportsplay.biz.rpc.walk.theme.queryThemeList",
-                            "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\",\"clientOS\":\"android\","
+                            "[{\"chInfo\":\"ch_appcenter__chsub_9patch\",\"clientOS\":\"android\","
                                             + "\"features\":[\"DAILY_STEPS_RANK_V2\",\"STEP_BATTLE\",\"CLUB_HOME_CARD\",\"NEW_HOME_PAGE_STATIC\",\"CLOUD_SDK_AUTH\",\"STAY_ON_COMPLETE\",\"EXTRA_TREASURE_BOX\",\"NEW_HOME_PAGE_STATIC\",\"SUPPORT_AI\",\"SUPPORT_FLYRABBIT\",\"SUPPORT_NEW_MATCH\",\"EXTERNAL_ADVERTISEMENT_TASK\",\"PROP\",\"PROPV2\",\"ASIAN_GAMES\"]}]");
     }
 
