@@ -11,6 +11,7 @@ import tkaxv7s.xposed.sesame.data.modelFieldExt.BooleanModelField;
 import tkaxv7s.xposed.sesame.data.modelFieldExt.ChoiceModelField;
 import tkaxv7s.xposed.sesame.data.modelFieldExt.IntegerModelField;
 import tkaxv7s.xposed.sesame.data.modelFieldExt.SelectModelField;
+import tkaxv7s.xposed.sesame.data.modelFieldExt.StringModelField;
 import tkaxv7s.xposed.sesame.data.task.ModelTask;
 import tkaxv7s.xposed.sesame.entity.AlipayUser;
 import tkaxv7s.xposed.sesame.hook.ApplicationHook;
@@ -30,8 +31,8 @@ public class AntSports extends ModelTask {
     private static final String TAG = AntSports.class.getSimpleName();
 
     private int tmpStepCount = -1;
-    private BooleanModelField walkGo;
-    private String pathId = "p0002023122214520001";
+    private BooleanModelField walk;
+    private StringModelField walkCustomPathId;
     private BooleanModelField openTreasureBox;
     private BooleanModelField receiveCoinAsset;
     private BooleanModelField donateCharityCoin;
@@ -59,7 +60,8 @@ public class AntSports extends ModelTask {
     @Override
     public ModelFields getFields() {
         ModelFields modelFields = new ModelFields();
-        modelFields.addField(walkGo = new BooleanModelField("walkGo", "行走路线", false));
+        modelFields.addField(walk = new BooleanModelField("walk", "行走路线 | 开启", false));
+        modelFields.addField(walkCustomPathId = new StringModelField("walkCustomPathId", "行走路线 | 自定义路线(debug)", "p0002023122214520001"));
         modelFields.addField(openTreasureBox = new BooleanModelField("openTreasureBox", "开启宝箱", false));
         modelFields.addField(sportsTasks = new BooleanModelField("sportsTasks", "开启运动任务", false));
         modelFields.addField(receiveCoinAsset = new BooleanModelField("receiveCoinAsset", "收运动币", false));
@@ -126,10 +128,10 @@ public class AntSports extends ModelTask {
                 sportsTasks();
 
             ClassLoader loader = ApplicationHook.getClassLoader();
-            if (walkGo.getValue()) {
-                walkGo(pathId);
+            if (walk.getValue()) {
+                walk(walkCustomPathId.getValue());
             }
-            if (openTreasureBox.getValue() && !walkGo.getValue())
+            if (openTreasureBox.getValue() && !walk.getValue())
                 queryMyHomePage(loader);
 
             if (donateCharityCoin.getValue() && Status.canDonateCharityCoin())
@@ -250,7 +252,7 @@ public class AntSports extends ModelTask {
         }
     }
 
-    private void walkGo(String pathId) {
+    private void walk(String pathId) {
         try {
             JSONObject user = new JSONObject(AntSportsRpcCall.queryUser());
             if (!user.getBoolean("success")) {
@@ -278,7 +280,7 @@ public class AntSports extends ModelTask {
                 walkGo(userPathStep.getString("pathId"), useStepCount, userPathStep.getString("pathName"));
             }
         } catch (Throwable t) {
-            Log.i(TAG, "walkGo err:");
+            Log.i(TAG, "walk err:");
             Log.printStackTrace(TAG, t);
         }
     }
