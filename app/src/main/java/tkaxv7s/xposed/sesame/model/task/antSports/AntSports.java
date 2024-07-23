@@ -275,9 +275,9 @@ public class AntSports extends ModelTask {
             int forwardStepCount = userPathStep.getInt("forwardStepCount");
             int remainStepCount = userPathStep.getInt("remainStepCount");
             int needStepCount = pathStepCount - forwardStepCount;
+            remainStepCount = 50000;// 调试模式
             if  (remainStepCount >= minGoStepCount) {
-                // int useStepCount = Math.min(remainStepCount, needStepCount);
-                int useStepCount = Math.min(50000, needStepCount);
+                int useStepCount = Math.min(remainStepCount, needStepCount);
                 walkGo(userPathStep.getString("pathId"), useStepCount, userPathStep.getString("pathName"));
             }
         } catch (Throwable t) {
