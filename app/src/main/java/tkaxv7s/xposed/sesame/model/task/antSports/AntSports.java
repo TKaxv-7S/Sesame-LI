@@ -32,6 +32,8 @@ public class AntSports extends ModelTask {
 
     private int tmpStepCount = -1;
     private BooleanModelField walk;
+    private ChoiceModelField walkPathTheme;
+    private BooleanModelField walkCustomPath;
     private StringModelField walkCustomPathId;
     private BooleanModelField openTreasureBox;
     private BooleanModelField receiveCoinAsset;
@@ -61,7 +63,9 @@ public class AntSports extends ModelTask {
     public ModelFields getFields() {
         ModelFields modelFields = new ModelFields();
         modelFields.addField(walk = new BooleanModelField("walk", "行走路线 | 开启", false));
-        modelFields.addField(walkCustomPathId = new StringModelField("walkCustomPathId", "行走路线 | 自定义路线(debug)", "p0002023122214520001"));
+        modelFields.addField(walkPathTheme = new ChoiceModelField("walkPathTheme", "行走路线 | 主题", WalkPathTheme.DA_MEI_ZHONG_GUO))
+        modelFields.addField(walkCustomPath = new BooleanModelField("walkCustomPath", "行走路线 | 开启自定义路线", false));
+        modelFields.addField(walkCustomPathId = new StringModelField("walkCustomPathId", "行走路线 | 自定义路线代码(debug)", "p0002023122214520001"));
         modelFields.addField(openTreasureBox = new BooleanModelField("openTreasureBox", "开启宝箱", false));
         modelFields.addField(sportsTasks = new BooleanModelField("sportsTasks", "开启运动任务", false));
         modelFields.addField(receiveCoinAsset = new BooleanModelField("receiveCoinAsset", "收运动币", false));
@@ -129,7 +133,7 @@ public class AntSports extends ModelTask {
 
             ClassLoader loader = ApplicationHook.getClassLoader();
             if (walk.getValue()) {
-                walk(walkCustomPathId.getValue());
+                walk();
             }
             if (openTreasureBox.getValue() && !walk.getValue())
                 queryMyHomePage(loader);
@@ -252,7 +256,7 @@ public class AntSports extends ModelTask {
         }
     }
 
-    private void walk(String pathId) {
+    private void walk() {
         try {
             JSONObject user = new JSONObject(AntSportsRpcCall.queryUser());
             if (!user.getBoolean("success")) {
@@ -260,6 +264,7 @@ public class AntSports extends ModelTask {
             }
             String joinedPathId = user.getJSONObject("data").getString("joinedPathId");
             if (joinedPathId == null) {
+                String pathId = queryJoinPath(walkPathTheme.getValue());
                 joinPath(pathId);
                 return;
             }
@@ -267,6 +272,7 @@ public class AntSports extends ModelTask {
             JSONObject userPathStep = path.getJSONObject("userPathStep");
             if ("COMPLETED".equals(userPathStep.getString("pathCompleteStatus"))) {
                 Log.record("行走路线🚶🏻‍♂️路线[" + userPathStep.getString("pathName") + "]已完成");
+                String pathId = queryJoinPath(walkPathTheme.getValue());
                 joinPath(pathId);
                 return;
             }
@@ -298,6 +304,34 @@ public class AntSports extends ModelTask {
             Log.i(TAG, "walkGo err:");
             Log.printStackTrace(TAG, t);
         }
+    }
+
+    private JSONObject queryWorldMap(String themeId) {
+        JSONObject theme = null;
+        try {
+            JSONObject jo = new JSONObject(AntSportsRpcCall.queryWorldMap(themeId));
+            if (jo.getBoolean("success")) {
+                theme = jo.getJSONObject("data");
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "queryWorldMap err:");
+            Log.printStackTrace(TAG, t);
+        }
+        return theme;
+    }
+
+    private JSONObject queryCityPath(String cityId) {
+        JSONObject city = null;
+        try {
+            JSONObject jo = new JSONObject(AntSportsRpcCall.queryCityPath(cityId));
+            if (jo.getBoolean("success")) {
+                city = jo.getJSONObject("data");
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "queryCityPath err:");
+            Log.printStackTrace(TAG, t);
+        }
+        return city;
     }
 
     private JSONObject queryPath(String pathId) {
@@ -338,12 +372,52 @@ public class AntSports extends ModelTask {
         }
     }
 
+    private String queryJoinPath(String themeId) {
+        if (walkCustomPath.getValue()) {
+            return walkCustomPathId.getValue();
+        }
+
+        String pathId = null;
+        try {
+            JSONObject theme = queryWorldMap(walkPathTheme.getValue());
+            if (theme == null) {
+                return pathId;
+            }
+            JSONArray cityList = theme.getJSONArray("cityList");
+            for (int i = 0; i < cityList.length(); i++) {
+                String cityId = cityList.getJSONObject(i).getString("cityId");
+                JSONObject city = queryCityPath(cityId);
+                if (city == null) {
+                    continue;
+                }
+                JSONArray cityPathList = city.getJSONArray("cityPathList");
+                for (int j = 0; j < cityPathList.length(); j++) {
+                    JSONObject cityPath = cityPathList.getJSONArray(j);
+                    pathId = cityPath.getString("pathId");
+                    if (!"COMPLETED".equals(cityPath.getString("pathCompleteStatus"))) {
+                        return pathId;
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "queryJoinPath err:");
+            Log.printStackTrace(TAG, t);
+        }
+        return pathId;
+    }
+
     private void joinPath(String pathId) {
+        if (pathId == null) {
+            // 龙年祈福线
+            pathId = "p0002023122214520001";
+        }
         try {
             JSONObject jo = new JSONObject(AntSportsRpcCall.joinPath(pathId));
             if (jo.getBoolean("success")) {
                 JSONObject path = queryPath(pathId);
                 Log.record("行走路线🚶🏻‍♂️路线[" + path.getJSONObject("path").getString("name") + "]已加入");
+            } else {
+                Log.record("行走路线🚶🏻‍♂️路线[" + pathId + "]有误，无法加入！");
             }
         } catch (Throwable t) {
             Log.i(TAG, "joinPath err:");
@@ -1067,6 +1141,17 @@ public class AntSports extends ModelTask {
             Log.i(TAG, "buyMember err:");
             Log.printStackTrace(TAG, t);
         }
+    }
+
+    public interface WalkPathTheme {
+        String DA_MEI_ZHONG_GUO = "M202308082226";
+        String GONG_YI_YI_XIAO_BU = "M202401042147";
+        String DENG_DING_ZHI_MA_SHAN = "V202405271625";
+        String WEI_C_DA_TIAO_ZHAN = "202404221422";
+        String LONG_NIAN_QI_FU = "WF202312050200";
+
+        String[] nickNames = {"大美中国", "公益一小步", "登顶芝麻山", "维C大挑战", "龙年祈福"};
+        
     }
 
     public interface DonateCharityCoinType {
