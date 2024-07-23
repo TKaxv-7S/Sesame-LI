@@ -266,7 +266,7 @@ public class AntSports extends ModelTask {
             JSONObject path = queryPath(joinedPathId);
             JSONObject userPathStep = path.getJSONObject("userPathStep");
             if ("COMPLETED".equals(userPathStep.getString("pathCompleteStatus"))) {
-                Log.record("完成路线🚶🏻‍♂️[" + userPathStep.getString("pathName") + "]");
+                Log.record("行走路线🚶🏻‍♂️路线[" + userPathStep.getString("pathName") + "]已完成");
                 joinPath(pathId);
                 return;
             }
@@ -276,7 +276,8 @@ public class AntSports extends ModelTask {
             int remainStepCount = userPathStep.getInt("remainStepCount");
             int needStepCount = pathStepCount - forwardStepCount;
             if  (remainStepCount >= minGoStepCount) {
-                int useStepCount = Math.min(remainStepCount, needStepCount);
+                // int useStepCount = Math.min(remainStepCount, needStepCount);
+                int useStepCount = Math.min(50000, needStepCount);
                 walkGo(userPathStep.getString("pathId"), useStepCount, userPathStep.getString("pathName"));
             }
         } catch (Throwable t) {
@@ -291,7 +292,7 @@ public class AntSports extends ModelTask {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             JSONObject jo = new JSONObject(AntSportsRpcCall.walkGo("202312191135", sdf.format(date), pathId, useStepCount));
             if (jo.getBoolean("success")) {
-                Log.record("行走路线🚶🏻‍♂️[" + pathName + "]#前进了" + useStepCount + "步");
+                Log.record("行走路线🚶🏻‍♂️路线[" + pathName + "]#前进了" + useStepCount + "步");
                 queryPath(pathId);
             }
         } catch (Throwable t) {
@@ -330,7 +331,7 @@ public class AntSports extends ModelTask {
             JSONArray ja = jo.getJSONObject("data").getJSONArray("rewards");
             for (int i = 0; i < ja.length(); i++) {
                 jo = ja.getJSONObject(i);
-                Log.record("行走路线🎁开宝箱获得[" + jo.getString("rewardName") + "]*" + jo.getInt("count"));
+                Log.record("行走路线🎁开启宝箱[" + jo.getString("rewardName") + "]*" + jo.getInt("count"));
             }
         } catch (Throwable t) {
             Log.i(TAG, "receiveEvent err:");
@@ -343,7 +344,7 @@ public class AntSports extends ModelTask {
             JSONObject jo = new JSONObject(AntSportsRpcCall.joinPath(pathId));
             if (jo.getBoolean("success")) {
                 JSONObject path = queryPath(pathId);
-                Log.record("加入路线🚶🏻‍♂️[" + path.getJSONObject("path").getString("name") + "]");
+                Log.record("行走路线🚶🏻‍♂️路线[" + path.getJSONObject("path").getString("name") + "]已加入");
             }
         } catch (Throwable t) {
             Log.i(TAG, "joinPath err:");
